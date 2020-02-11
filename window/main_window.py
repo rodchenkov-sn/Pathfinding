@@ -1,46 +1,46 @@
 import tkinter as tk
 
+from settings.settings import *
 from grid.grid import Grid
-from pathfinding_algorithms import dfs, bfs
+from pathfinding_algorithms import dfs, bfs, astar
 from window.window_stage import WindowStage
 
 
 class MainWindow:
-    def __init__(self, width: int, height: int):
-        if width <= 0 or height <= 0:
-            raise ValueError('Expected positive width and height at MainWindow.__init__')
+    def __init__(self):
         self.__stage = WindowStage.EDIT_OBSTACLES
-        self.__width = width
-        self.__height = height
-        self.__grid = Grid(50, 50)
+        self.__width = CANVAS_WIDTH
+        self.__height = CANVAS_HEIGHT
+        self.__grid = Grid(GRID_WIDTH, GRID_HEIGHT)
         self.__root = tk.Tk()
         self.__canvas = tk.Canvas(self.__root, width=self.__width, height=self.__height, bg='white')
-        self.__canvas.pack(padx=10, pady=10)
+        self.__canvas.pack(padx=ELEMENTS_PADDING, pady=ELEMENTS_PADDING)
         self.__canvas.bind('<Button-1>', self.__on_canvas_click)
         self.__algorithm = tk.StringVar()
         self.__algorithm.set('DFS')
         tk.Button(
             self.__root, text='obstacle', bg='black', fg='white',
             command=lambda _=None: self.__set_stage(WindowStage.EDIT_OBSTACLES)
-        ).pack(padx=10, pady=5, side=tk.LEFT)
+        ).pack(padx=ELEMENTS_PADDING, pady=(ELEMENTS_PADDING // 2), side=tk.LEFT)
         tk.Button(
             self.__root, text='start', bg='cyan',
             command=lambda _=None: self.__set_stage(WindowStage.EDIT_START)
-        ).pack(padx=10, pady=5, side=tk.LEFT)
+        ).pack(padx=ELEMENTS_PADDING, pady=(ELEMENTS_PADDING // 2), side=tk.LEFT)
         tk.Button(
             self.__root, text='destination', bg='blue', fg='white',
             command=lambda _=None: self.__set_stage(WindowStage.EDIT_DESTINATION)
-        ).pack(padx=10, pady=5, side=tk.LEFT)
+        ).pack(padx=ELEMENTS_PADDING, pady=(ELEMENTS_PADDING // 2), side=tk.LEFT)
         tk.Button(
             self.__root, text='solve', bg='green', fg='white',
             command=lambda _=None: self.__solve()
-        ).pack(padx=10, pady=5, side=tk.LEFT)
+        ).pack(padx=ELEMENTS_PADDING, pady=(ELEMENTS_PADDING // 2), side=tk.LEFT)
         tk.OptionMenu(
             self.__root, self.__algorithm, 'DFS', 'BFS', 'A*'
-        ).pack(padx=10, pady=5, side=tk.LEFT)
+        ).pack(padx=ELEMENTS_PADDING, pady=(ELEMENTS_PADDING // 2), side=tk.LEFT)
         self.__solvers = {
             'DFS': dfs.DfsSearch,
-            'BFS': bfs.BfsSearch
+            'BFS': bfs.BfsSearch,
+            'A*': astar.AStar
         }
 
     def main_loop(self):

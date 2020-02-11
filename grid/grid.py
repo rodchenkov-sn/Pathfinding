@@ -1,4 +1,5 @@
 from grid.cell import Cell
+from settings.settings import *
 
 
 class Grid:
@@ -18,15 +19,15 @@ class Grid:
         for i in range(self.width):
             for j in range(self.height):
                 if self.__obstacles[i][j]:
-                    fill_color = 'black'
+                    fill_color = CELL_COLOR['obstacle']
                 elif self.start_cell and self.start_cell == Cell(i, j):
-                    fill_color = 'cyan'
+                    fill_color = CELL_COLOR['start']
                 elif self.dest_cell and self.dest_cell == Cell(i, j):
-                    fill_color = 'blue'
+                    fill_color = CELL_COLOR['destination']
                 elif self.__color_scheme[i][j]:
                     fill_color = self.__color_scheme[i][j]
                 else:
-                    fill_color = 'white'
+                    fill_color = CELL_COLOR['free']
                 canvas.create_rectangle(i * cell_width, j * cell_height,
                                         (i + 1) * cell_width, (j + 1) * cell_height, fill=fill_color)
 

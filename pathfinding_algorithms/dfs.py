@@ -1,9 +1,11 @@
 from time import sleep
 
+from pathfinding_algorithms.pathfinder import PassFinder
 from grid.grid import Grid
+from settings.settings import *
 
 
-class DfsSearch:
+class DfsSearch(PassFinder):
     def __init__(self, grid: Grid):
         self.__grid = grid
         self.__routes = [[None] * self.__grid.height for _ in range(self.__grid.width)]
@@ -20,7 +22,7 @@ class DfsSearch:
         while self.__routes[curr.x][curr.y]:
             canvas.update()
             sleep(0.01)
-            self.__grid.set_color(curr, '#1dcc25', canvas)
+            self.__grid.set_color(curr, CELL_COLOR['route'], canvas)
             curr = self.__routes[curr.x][curr.y]
 
     def __find_path(self, start, canvas):
@@ -32,7 +34,7 @@ class DfsSearch:
                 self.__visited[curr.x][curr.y] = True
                 canvas.update()
                 sleep(0.01)
-                self.__grid.set_color(curr, '#ffde4a', canvas)
+                self.__grid.set_color(curr, CELL_COLOR['visited'], canvas)
                 self.__routes[curr.x][curr.y] = prev
                 if curr == self.__grid.dest_cell:
                     self.found_path = True
