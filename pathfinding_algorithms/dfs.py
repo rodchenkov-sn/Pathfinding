@@ -1,4 +1,5 @@
 from time import sleep
+from collections import deque
 
 from pathfinding_algorithms.pathfinder import PassFinder
 from grid.grid import Grid
@@ -26,20 +27,20 @@ class DfsSearch(PassFinder):
             curr = self.__routes[curr.x][curr.y]
 
     def __find_path(self, start, canvas):
-        prev = None
-        stack = [start]
-        while len(stack) != 0:
-            curr = stack.pop(len(stack) - 1)
-            if not self.__visited[curr.x][curr.y]:
-                self.__visited[curr.x][curr.y] = True
-                canvas.update()
-                sleep(0.01)
-                self.__grid.set_color(curr, CELL_COLOR['visited'], canvas)
-                self.__routes[curr.x][curr.y] = prev
-                if curr == self.__grid.dest_cell:
-                    self.found_path = True
-                    return
-                prev = curr
-                for c in curr.neighbours():
-                    if c.x < self.__grid.width and c.y < self.__grid.height and not self.__grid.is_obstacle(c):
-                        stack.append(c)
+        q = deque()
+        q.append(start)
+        self.__visited[start.x][start.y] = True
+        while len(q) != 0:
+            curr = q.pop()
+            if curr == self.__grid.dest_cell:
+                self.found_path = True
+                return
+            canvas.update()
+            sleep(0.01)
+            self.__grid.set_color(curr, CELL_COLOR['visited'], canvas)
+            for c in curr.neighbours():
+                if  not self.__grid.is_obstacle(c) and not self.__visited[c.x][c.y]:
+                    self.__visited[c.x][c.y] = True
+                    q.append(c)
+                    self.__routes[c.x][c.y] = curr
+
